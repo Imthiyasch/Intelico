@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || "",
-  key_secret: process.env.RAZORPAY_KEY_SECRET || "",
-});
+function getRazorpay() {
+  const keyId = process.env.RAZORPAY_KEY_ID;
+  const keySecret = process.env.RAZORPAY_KEY_SECRET;
+  if (!keyId || !keySecret) {
+    throw new Error("Razorpay credentials missing");
+  }
+  return new Razorpay({
+    key_id: keyId,
+    key_secret: keySecret,
+  });
+}
 
 const PLAN_IDS: Record<string, string> = {
   pro: "plan_pro_id_from_razorpay",
@@ -19,6 +26,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Razorpay not configured" }, { status: 503 });
     }
 
+    const razorpay = getRazorpay();
     const razorpayPlanId = PLAN_IDS[planId];
     if (!razorpayPlanId) {
       return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
