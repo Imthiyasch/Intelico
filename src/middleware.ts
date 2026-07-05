@@ -1,30 +1,55 @@
+import { createServerClient } from "@supabase/auth-helpers-nextjs";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const protectedRoutes = ["/dashboard", "/builder"];
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
+  let res = NextResponse.next({
+    request: {
+      headers: req.headers,
+    },
+  });
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            req.cookies.set(name, value)
+          );
+          res = NextResponse.next({
+            request: {
+              headers: req.headers,
+            },
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            res.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
   const { pathname } = req.nextUrl;
-
-  // Check if the route needs protection
   const isProtected = protectedRoutes.some((route) => pathname.startsWith(route));
-  if (!isProtected) return NextResponse.next();
 
-  // Check for Supabase auth cookie
-  const supabaseCookie =
-    req.cookies.get("sb-access-token")?.value ||
-    req.cookies.get("supabase-auth-token")?.value ||
-    // Look for any Supabase session cookie
-    [...req.cookies.getAll()].find(c => c.name.includes("supabase") || c.name.startsWith("sb-"))?.value;
-
-  if (!supabaseCookie) {
-    const url = req.nextUrl.clone();
-    url.pathname = "/auth";
-    url.searchParams.set("redirected", "true");
-    return NextResponse.redirect(url);
+  if (isProtected) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      const url = req.nextUrl.clone();
+      url.pathname = "/auth";
+      url.searchParams.set("redirected", "true");
+      return NextResponse.redirect(url);
+    }
   }
 
-  return NextResponse.next();
+  return res;
 }
 
 export const config = {
