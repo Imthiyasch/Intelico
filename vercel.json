@@ -1,0 +1,31 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "next build",
+  "devCommand": "next dev",
+  "outputDirectory": ".next",
+  "functions": {
+    "src/app/api/parse-cv/route.ts": {
+      "maxDuration": 30,
+      "memory": 1024
+    },
+    "src/app/api/optimize-resume/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/export-docx/route.ts": {
+      "maxDuration": 15
+    },
+    "src/app/api/razorpay/webhook/route.ts": {
+      "maxDuration": 10
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
+      ]
+    }
+  ]
+}
