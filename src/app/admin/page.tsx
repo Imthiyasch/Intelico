@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { createServerSupabase } from "@/lib/supabase";
 import Navbar from "@/components/layout/Navbar";
 import { Users, FileText, Activity, ShieldAlert } from "lucide-react";
+import UsersTable from "./UsersTable";
 
 export const dynamic = "force-dynamic";
 
@@ -37,16 +38,30 @@ export default async function AdminPage() {
 
   // Fetch metrics using service role to bypass RLS
   const [
-    { count: usersCount },
-    { count: resumesCount },
-    { data: recentActivities },
-    { data: usersList }
+    { data: { users: authUsers } },
+    { count: resumesCount, data: resumesData },
+    { data: recentActivities }
   ] = await Promise.all([
-    supabase.from("users").select("*", { count: "exact", head: true }),
-    supabase.from("resumes").select("*", { count: "exact", head: true }),
-    supabase.from("activities").select("*").order("created_at", { ascending: false }).limit(20),
-    supabase.from("users").select("*").order("created_at", { ascending: false }).limit(10)
+    supabase.auth.admin.listUsers(),
+    supabase.from("resumes").select("user_id", { count: "exact" }),
+    supabase.from("activities").select("*").order("created_at", { ascending: false }).limit(20)
   ]);
+
+  const usersCount = authUsers?.length || 0;
+
+  const resumeCounts = (resumesData || []).reduce((acc: Record<string, number>, resume) => {
+    acc[resume.user_id] = (acc[resume.user_id] || 0) + 1;
+    return acc;
+  }, {});
+
+  const formattedUsers = (authUsers || []).map((u: any) => ({
+    id: u.id,
+    email: u.email || "",
+    created_at: u.created_at,
+    last_sign_in_at: u.last_sign_in_at,
+    banned_until: u.banned_until,
+    resumeCount: resumeCounts[u.id] || 0
+  })).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
@@ -91,65 +106,43 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Activity List */}
-          <div className="lg:col-span-2">
-            <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
-                    <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Action</th>
-                    <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Details</th>
-                    <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Time</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-sm">
-                  {recentActivities && recentActivities.length > 0 ? (
-                    recentActivities.map((act) => (
-                      <tr key={act.id} className="hover:bg-slate-50/50">
-                        <td className="py-4 px-6 font-medium text-slate-700">{act.action}</td>
-                        <td className="py-4 px-6 text-slate-500">
-                          {act.details ? JSON.stringify(act.details).substring(0, 50) : "-"}
-                        </td>
-                        <td className="py-4 px-6 text-slate-500">
-                          {new Date(act.created_at).toLocaleString()}
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={3} className="py-8 text-center text-slate-500">No recent activities found.</td>
+        <div className="mb-12">
+          <h2 className="text-xl font-bold mb-4">Recent Activity</h2>
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100">
+                  <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Action</th>
+                  <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Details</th>
+                  <th className="py-4 px-6 text-xs font-semibold text-slate-500 uppercase">Time</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-sm">
+                {recentActivities && recentActivities.length > 0 ? (
+                  recentActivities.map((act) => (
+                    <tr key={act.id} className="hover:bg-slate-50/50">
+                      <td className="py-4 px-6 font-medium text-slate-700">{act.action}</td>
+                      <td className="py-4 px-6 text-slate-500">
+                        {act.details ? JSON.stringify(act.details).substring(0, 50) : "-"}
+                      </td>
+                      <td className="py-4 px-6 text-slate-500">
+                        {new Date(act.created_at).toLocaleString()}
+                      </td>
                     </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Newest Users */}
-          <div>
-            <h2 className="text-xl font-bold mb-4">Newest Users</h2>
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-              <ul className="space-y-4">
-                {usersList && usersList.length > 0 ? (
-                  usersList.map((u) => (
-                    <li key={u.id} className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-600">
-                        {u.email ? u.email[0].toUpperCase() : "?"}
-                      </div>
-                      <div className="overflow-hidden">
-                        <p className="text-sm font-medium text-slate-700 truncate">{u.email || "Anonymous"}</p>
-                        <p className="text-xs text-slate-400">{new Date(u.created_at).toLocaleDateString()}</p>
-                      </div>
-                    </li>
                   ))
                 ) : (
-                  <li className="text-center text-slate-500 py-4">No users found.</li>
+                  <tr>
+                    <td colSpan={3} className="py-8 text-center text-slate-500">No recent activities found.</td>
+                  </tr>
                 )}
-              </ul>
-            </div>
+              </tbody>
+            </table>
           </div>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-bold mb-4">User Management</h2>
+          <UsersTable users={formattedUsers} />
         </div>
       </main>
     </div>
