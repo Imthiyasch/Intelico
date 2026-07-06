@@ -59,7 +59,7 @@ function AuthForm() {
           </div>
 
           <h1 className="text-3xl font-extrabold mb-3 tracking-tight">
-            Welcome back
+            Welcome
           </h1>
           <p className="text-slate-500 text-base mb-10 leading-relaxed">
             Sign in or create an account to start building your ATS-optimized resume.
