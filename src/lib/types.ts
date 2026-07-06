@@ -15,6 +15,11 @@ export interface ResumeData {
   projects?: ProjectItem[];
   achievements?: string[];
   languages?: string[];
+  tools?: string[];
+  references?: string;
+  jobRole?: string;
+  industry?: string;
+  additionalInstructions?: string;
 }
 
 export interface ExperienceItem {
@@ -75,47 +80,44 @@ export interface PricingPlan {
 
 export const PRICING_PLANS: PricingPlan[] = [
   {
-    id: "free",
-    name: "Free",
-    price: 0,
-    period: "forever",
-    features: [
-      "1 Resume",
-      "3 ATS Templates",
-      "PDF Download",
-      "Basic AI optimization",
-    ],
-    highlighted: false,
-  },
-  {
-    id: "pro",
-    name: "Pro",
+    id: "starter",
+    name: "Starter",
     price: 499,
     period: "3 months",
     features: [
       "Unlimited Resumes",
       "All 5 ATS Templates",
-      "PDF & Word Download",
+      "PDF Download",
+      "Basic AI optimization",
+      "Basic Email Support",
+    ],
+    highlighted: false,
+  },
+  {
+    id: "popular",
+    name: "Popular",
+    price: 799,
+    period: "6 months",
+    features: [
+      "Everything in Starter",
+      "Word Download (.docx)",
       "Advanced AI optimization",
       "CV Upload & Parse",
       "ATS Score Check",
-      "Priority Support",
     ],
     highlighted: true,
   },
   {
-    id: "premium",
-    name: "Premium",
-    price: 999,
-    period: "year",
+    id: "best_value",
+    name: "Best Value",
+    price: 1299,
+    period: "12 months",
     features: [
-      "Everything in Pro",
-      "Unlimited Resumes",
-      "Cover Letter Builder",
+      "Everything in Popular",
+      "Priority WhatsApp Support",
       "LinkedIn Optimizer",
-      "Interview Prep Tips",
+      "Cover Letter Builder",
       "1-on-1 Review Session",
-      "White-glove Support",
     ],
     highlighted: false,
   },
@@ -146,4 +148,9 @@ export const EMPTY_RESUME: ResumeData = {
   projects: [],
   achievements: [],
   languages: [],
+  tools: [],
+  references: "",
+  jobRole: "",
+  industry: "",
+  additionalInstructions: "",
 };

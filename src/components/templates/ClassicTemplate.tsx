@@ -7,7 +7,7 @@ interface TemplateProps {
 }
 
 export function ClassicTemplate({ data }: TemplateProps) {
-  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [] } = data;
+  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [], certifications = [], tools = [], references } = data;
   return (
     <div className="font-serif bg-white text-gray-900 w-full min-h-[1056px] p-12 print-area" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "11pt", lineHeight: 1.5 }}>
       {/* Header */}
@@ -115,6 +115,35 @@ export function ClassicTemplate({ data }: TemplateProps) {
       {languages.length > 0 && (
         <Section title="Languages">
           <p className="text-sm">{languages.join(" · ")}</p>
+        </Section>
+      )}
+
+      {/* Certifications */}
+      {certifications.length > 0 && (
+        <Section title="Certifications">
+          {certifications.map((cert) => (
+            <div key={cert.id} className="flex justify-between items-baseline mb-2">
+              <div>
+                <span className="font-bold text-sm">{cert.name}</span>
+                {cert.issuer && <span className="text-xs text-gray-600 italic ml-2">{cert.issuer}</span>}
+              </div>
+              {cert.date && <span className="text-xs text-gray-500 italic">{cert.date}</span>}
+            </div>
+          ))}
+        </Section>
+      )}
+
+      {/* Tools */}
+      {tools.length > 0 && (
+        <Section title="Tools & Software">
+          <p className="text-sm">{tools.join(" · ")}</p>
+        </Section>
+      )}
+
+      {/* References */}
+      {references && references.trim() && (
+        <Section title="References">
+          <p className="text-xs text-gray-700 whitespace-pre-line">{references}</p>
         </Section>
       )}
     </div>

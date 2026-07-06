@@ -25,10 +25,10 @@ export default function LandingPage() {
             
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-12">
               <Link href="/auth" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition-colors text-center shadow-lg shadow-blue-600/20">
-                Upload Your Resume
+                Get Started
               </Link>
-              <Link href="/builder/preview" className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-slate-200 hover:border-slate-300 text-slate-700 rounded-full font-semibold transition-colors flex items-center justify-center gap-2">
-                Try Demo <ArrowRight className="w-4 h-4" />
+              <Link href="/builder" className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-slate-200 hover:border-slate-300 text-slate-700 rounded-full font-semibold transition-colors flex items-center justify-center gap-2">
+                Build Resume <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
             
@@ -403,6 +403,163 @@ export default function LandingPage() {
             <p className="text-sm text-slate-500">Tailored for VPs, directors, team leaders, and senior executives.</p>
           </div>
 
+        </div>
+      </section>
+
+      {/* About Intellico Section */}
+      <section className="py-24 px-4 bg-white border-t border-slate-100 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100 mb-6">
+            <Cpu className="w-3.5 h-3.5 animate-pulse" /> About Intellico
+          </div>
+          <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight mb-6">
+            The End-to-End <span className="text-blue-600">AI-Powered</span> Resume Builder
+          </h2>
+          <p className="text-slate-600 text-lg leading-relaxed mb-8">
+            At Intellico, we believe that job searching shouldn't be held back by formatting rules and writer's block. We build tools that integrate state-of-the-art LLMs (GPT-4o-mini & Gemini) with professional resume writing expertise. Our platform parses your existing credentials, structures them into clean, ATS-compliant formats, and tailors every bullet point to hit target job keywords.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div className="text-2xl font-bold text-slate-900">99.4%</div>
+              <div className="text-xs text-slate-500 mt-1">ATS Pass Rate</div>
+            </div>
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div className="text-2xl font-bold text-slate-900">42%</div>
+              <div className="text-xs text-slate-500 mt-1">Avg. Interview Increase</div>
+            </div>
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 col-span-2 md:col-span-1">
+              <div className="text-2xl font-bold text-slate-900">10k+</div>
+              <div className="text-xs text-slate-500 mt-1">Resumes Created</div>
+            </div>
+          </div>
+        </div>
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-72 h-72 bg-blue-400/5 rounded-full blur-3xl pointer-events-none"></div>
+      </section>
+
+      {/* Key Features Section */}
+      <section className="py-24 px-4 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight font-display">
+              Packed with <span className="text-blue-600">Advanced Features</span>
+            </h2>
+            <p className="text-slate-600 mt-3 text-base max-w-xl mx-auto">
+              Everything you need to create, optimize, customize, and export professional resumes.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-6">
+                <Sparkles className="w-6 h-6 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">AI Processing Engine</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                Powered by ChatGPT-4o-mini and Gemini, our AI analyzes job descriptions, rewrites bullet points with strong action verbs, injects relevant keywords, and improves summaries instantly.
+              </p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center mb-6">
+                <FileText className="w-6 h-6 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">ATS-Optimized Output</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                All templates follow strict compliance guidelines: single-column layout, standard margins, no images/tables that disrupt parses, and standard resume section headers.
+              </p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-6">
+                <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-3">Instant Feedback & Scoring</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                Upload your CV or write your details manually, then scan it against target job descriptions to receive an immediate ATS Score and keyword checklist.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-24 px-4 bg-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 leading-tight font-display">
+              Flexible <span className="text-blue-600">Subscription Plans</span>
+            </h2>
+            <p className="text-slate-600 mt-3 text-base max-w-xl mx-auto">
+              Start building today. Upgrade anytime to access premium layouts and advanced AI tools.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Starter Plan */}
+            <div className="border border-slate-200 rounded-2xl p-8 hover:shadow-md transition-all flex flex-col justify-between">
+              <div>
+                <h3 className="font-bold text-lg text-slate-950 mb-2">Starter</h3>
+                <div className="flex items-baseline gap-1 mb-4">
+                  <span className="text-4xl font-extrabold text-slate-950">₹499</span>
+                  <span className="text-slate-500 text-xs">/ 3 months</span>
+                </div>
+                <ul className="space-y-3 text-sm text-slate-600 mb-8">
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> Unlimited Resumes</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> All 5 ATS Templates</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> PDF Download</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> Basic AI optimization</li>
+                </ul>
+              </div>
+              <Link href="/pricing" className="w-full text-center py-3 bg-slate-100 hover:bg-slate-200 text-slate-950 rounded-xl font-semibold transition-colors text-sm">
+                Get Starter
+              </Link>
+            </div>
+            
+            {/* Popular Plan */}
+            <div className="border-2 border-blue-500 rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all flex flex-col justify-between relative bg-blue-50/20">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs font-bold px-3 py-0.5 rounded-full uppercase tracking-wider">
+                ⭐ Most Popular
+              </div>
+              <div>
+                <h3 className="font-bold text-lg text-slate-950 mb-2">Popular</h3>
+                <div className="flex items-baseline gap-1 mb-4">
+                  <span className="text-4xl font-extrabold text-slate-950">₹799</span>
+                  <span className="text-slate-500 text-xs">/ 6 months</span>
+                </div>
+                <ul className="space-y-3 text-sm text-slate-600 mb-8">
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> Everything in Starter</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> Word Download (.docx)</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> Advanced AI optimization</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> CV Upload & Parse</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> ATS Score Check</li>
+                </ul>
+              </div>
+              <Link href="/pricing" className="w-full text-center py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors text-sm">
+                Get Popular
+              </Link>
+            </div>
+            
+            {/* Best Value Plan */}
+            <div className="border border-slate-200 rounded-2xl p-8 hover:shadow-md transition-all flex flex-col justify-between">
+              <div>
+                <h3 className="font-bold text-lg text-slate-950 mb-2">Best Value</h3>
+                <div className="flex items-baseline gap-1 mb-4">
+                  <span className="text-4xl font-extrabold text-slate-950">₹1299</span>
+                  <span className="text-slate-500 text-xs">/ 12 months</span>
+                </div>
+                <ul className="space-y-3 text-sm text-slate-600 mb-8">
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> Everything in Popular</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> WhatsApp Support widget</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> LinkedIn Optimizer</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> Cover Letter Builder</li>
+                  <li className="flex items-center gap-2"><Check className="w-4 h-4 text-green-500" /> 1-on-1 Review Session</li>
+                </ul>
+              </div>
+              <Link href="/pricing" className="w-full text-center py-3 bg-slate-100 hover:bg-slate-200 text-slate-955 rounded-xl font-semibold transition-colors text-sm">
+                Get Best Value
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 

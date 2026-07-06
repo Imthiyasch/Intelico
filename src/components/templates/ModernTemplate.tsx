@@ -5,7 +5,7 @@ import { formatDate } from "@/lib/utils";
 interface TemplateProps { data: ResumeData; }
 
 export function ModernTemplate({ data }: TemplateProps) {
-  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [] } = data;
+  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [], certifications = [], tools = [], references } = data;
   const ACCENT = "#2563EB";
   return (
     <div className="bg-white text-gray-800 w-full min-h-[1056px] print-area" style={{ fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif", fontSize: "10.5pt" }}>
@@ -128,6 +128,44 @@ export function ModernTemplate({ data }: TemplateProps) {
                 <span key={l} className="px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ background: "#f1f5f9", color: "#475569" }}>{l}</span>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Certifications */}
+        {certifications.length > 0 && (
+          <div>
+            <SectionHead title="Certifications" accent={ACCENT} />
+            <div className="space-y-1">
+              {certifications.map((cert) => (
+                <div key={cert.id} className="flex justify-between items-baseline">
+                  <div>
+                    <span className="text-xs font-semibold text-slate-800">{cert.name}</span>
+                    {cert.issuer && <span className="text-xs text-gray-500 ml-2">· {cert.issuer}</span>}
+                  </div>
+                  {cert.date && <span className="text-xs text-gray-400">{cert.date}</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tools */}
+        {tools.length > 0 && (
+          <div>
+            <SectionHead title="Tools & Software" accent={ACCENT} />
+            <div className="flex flex-wrap gap-2">
+              {tools.map((t) => (
+                <span key={t} className="px-2.5 py-0.5 rounded-full text-xs font-medium" style={{ background: "#ecfdf5", color: "#059669" }}>{t}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* References */}
+        {references && references.trim() && (
+          <div>
+            <SectionHead title="References" accent={ACCENT} />
+            <p className="text-xs text-gray-700 whitespace-pre-line">{references}</p>
           </div>
         )}
       </div>

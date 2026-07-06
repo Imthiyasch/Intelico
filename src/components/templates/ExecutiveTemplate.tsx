@@ -5,7 +5,7 @@ import { formatDate } from "@/lib/utils";
 interface TemplateProps { data: ResumeData; }
 
 export function ExecutiveTemplate({ data }: TemplateProps) {
-  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [] } = data;
+  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [], certifications = [], tools = [], references } = data;
   return (
     <div className="bg-white text-gray-800 w-full min-h-[1056px] p-12 print-area" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "10.5pt", lineHeight: 1.55 }}>
       {/* Two-column header */}
@@ -137,6 +137,45 @@ export function ExecutiveTemplate({ data }: TemplateProps) {
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {/* Certifications */}
+          {certifications.length > 0 && (
+            <div>
+              <ExecSection title="Certifications" />
+              <div className="space-y-2">
+                {certifications.map((cert) => (
+                  <div key={cert.id}>
+                    <div className="text-xs font-bold" style={{ color: "#1e3a5f" }}>{cert.name}</div>
+                    {cert.issuer && <div className="text-xs italic text-gray-600">{cert.issuer}</div>}
+                    {cert.date && <div className="text-xs text-gray-500">{cert.date}</div>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Tools */}
+          {tools.length > 0 && (
+            <div>
+              <ExecSection title="Tools" />
+              <ul className="space-y-1">
+                {tools.map((t) => (
+                  <li key={t} className="text-xs flex items-start gap-1.5">
+                    <span className="text-gray-400 mt-0.5">▸</span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* References */}
+          {references && references.trim() && (
+            <div>
+              <ExecSection title="References" />
+              <p className="text-xs text-gray-700 whitespace-pre-line">{references}</p>
             </div>
           )}
         </div>

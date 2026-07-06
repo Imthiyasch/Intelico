@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createServerSupabase } from "@/lib/supabase";
 import Navbar from "@/components/layout/Navbar";
-import { Users, FileText, Activity, ShieldAlert } from "lucide-react";
+import { Users, FileText, Activity, ShieldAlert, CreditCard, TrendingUp } from "lucide-react";
 import UsersTable from "./UsersTable";
 
 export const dynamic = "force-dynamic";
@@ -40,14 +40,24 @@ export default async function AdminPage() {
   const [
     { data: { users: authUsers } },
     { count: resumesCount, data: resumesData },
-    { data: recentActivities }
+    { data: recentActivities },
+    { data: planData }
   ] = await Promise.all([
     supabase.auth.admin.listUsers(),
     supabase.from("resumes").select("user_id", { count: "exact" }),
-    supabase.from("activities").select("*").order("created_at", { ascending: false }).limit(20)
+    supabase.from("activities").select("*").order("created_at", { ascending: false }).limit(20),
+    supabase.from("users").select("plan")
   ]);
 
   const usersCount = authUsers?.length || 0;
+
+  // Plan distribution
+  const planCounts: Record<string, number> = {};
+  (planData || []).forEach((u: { plan: string }) => {
+    const p = u.plan || "free";
+    planCounts[p] = (planCounts[p] || 0) + 1;
+  });
+  const activePlanCount = Object.entries(planCounts).filter(([k]) => k !== "free").reduce((s, [, v]) => s + v, 0);
 
   const resumeCounts = (resumesData || []).reduce((acc: Record<string, number>, resume) => {
     acc[resume.user_id] = (acc[resume.user_id] || 0) + 1;
@@ -74,7 +84,7 @@ export default async function AdminPage() {
         </div>
 
         {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
               <Users className="w-6 h-6 text-blue-600" />
@@ -96,6 +106,16 @@ export default async function AdminPage() {
           </div>
 
           <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
+              <CreditCard className="w-6 h-6 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-500">Active Subscribers</p>
+              <p className="text-2xl font-bold">{activePlanCount}</p>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center">
               <Activity className="w-6 h-6 text-purple-600" />
             </div>
@@ -103,6 +123,22 @@ export default async function AdminPage() {
               <p className="text-sm font-medium text-slate-500">Recent Activities</p>
               <p className="text-2xl font-bold">{recentActivities?.length || 0}</p>
             </div>
+          </div>
+        </div>
+
+        {/* Plan Distribution */}
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-12">
+          <div className="flex items-center gap-2 mb-4">
+            <TrendingUp className="w-5 h-5 text-blue-600" />
+            <h2 className="text-xl font-bold">Subscription Plan Distribution</h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {["free", "starter", "popular", "best-value"].map((p) => (
+              <div key={p} className="rounded-xl border border-slate-100 p-4 text-center">
+                <p className="text-xs font-medium text-slate-500 capitalize mb-1">{p === "best-value" ? "Best Value" : p.charAt(0).toUpperCase() + p.slice(1)}</p>
+                <p className="text-3xl font-black text-slate-800">{planCounts[p] || 0}</p>
+              </div>
+            ))}
           </div>
         </div>
 

@@ -12,17 +12,29 @@ import { truncate } from "@/lib/utils";
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<{ email?: string; id?: string } | null>(null);
+  const [profile, setProfile] = useState<{ name?: string; plan?: string } | null>(null);
   const [resumes, setResumes] = useState<Resume[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) {
         router.push("/auth");
         return;
       }
       setUser({ email: data.user.email, id: data.user.id });
+      
+      const { data: profileData } = await supabase
+        .from("users")
+        .select("name, plan")
+        .eq("id", data.user.id)
+        .single();
+      
+      if (profileData) {
+        setProfile(profileData);
+      }
+      
       fetchResumes(data.user.id);
     });
   }, [router]);
@@ -88,10 +100,16 @@ export default function DashboardPage() {
                 <span className="text-sm text-slate-500 font-medium">Dashboard</span>
               </div>
               <h1 className="font-display text-3xl font-bold">My Resumes</h1>
-              <p className="text-slate-500 text-sm mt-1">
-                {user?.email} &nbsp;·&nbsp;
-                <span className="badge-brand ml-1 text-xs">Free Plan</span>
-              </p>
+              <div className="text-slate-500 text-sm mt-1 flex items-center flex-wrap gap-2">
+                <span>{profile?.name ? `${profile.name} (${user?.email})` : user?.email}</span>
+                <span>·</span>
+                <span className="badge-brand text-xs capitalize">
+                  {profile?.plan || "free"} Plan
+                </span>
+                <Link href="/pricing" className="text-blue-600 hover:text-blue-700 font-semibold text-xs hover:underline flex items-center gap-0.5 ml-2">
+                  Upgrade Plan & Billing →
+                </Link>
+              </div>
             </div>
             <Link
               href="/builder"
@@ -114,7 +132,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             {[
               { label: "Total Resumes", value: resumes.length, icon: FileText },
-              { label: "Plan", value: "Free", icon: Zap },
+              { label: "Plan", value: profile?.plan ? profile.plan.charAt(0).toUpperCase() + profile.plan.slice(1) : "Free", icon: Zap },
               { label: "Downloads", value: "—", icon: Download },
               { label: "ATS Score", value: "—", icon: Eye },
             ].map((stat) => (

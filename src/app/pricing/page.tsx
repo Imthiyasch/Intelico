@@ -137,28 +137,30 @@ export default function PricingPage() {
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50/50">
                     <th className="text-left px-8 py-4 text-slate-500 font-medium">Feature</th>
-                    <th className="px-6 py-4 text-center font-semibold">Free</th>
-                    <th className="px-6 py-4 text-center font-semibold text-blue-600">Pro</th>
-                    <th className="px-6 py-4 text-center font-semibold">Premium</th>
+                    <th className="px-6 py-4 text-center font-semibold">Starter (3 Mo)</th>
+                    <th className="px-6 py-4 text-center font-semibold text-blue-600">Popular (6 Mo)</th>
+                    <th className="px-6 py-4 text-center font-semibold">Best Value (1 Yr)</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                   {[
-                    ["Resume limit", "1", "Unlimited", "Unlimited"],
-                    ["Templates", "3", "All 5", "All 5"],
-                    ["PDF Download", "✓", "✓", "✓"],
-                    ["Word Download", "—", "✓", "✓"],
-                    ["AI Optimization", "Basic", "Advanced", "Advanced"],
-                    ["CV Upload & Parse", "—", "✓", "✓"],
-                    ["ATS Score Check", "—", "✓", "✓"],
-                    ["Cover Letter", "—", "—", "✓"],
+                    ["AI Resume Builder", "✓", "✓", "✓"],
+                    ["Templates", "All 5", "All 5", "All 5"],
+                    ["PDF & Word Download", "✓", "✓", "✓"],
+                    ["AI Optimization", "✓", "✓", "✓"],
+                    ["CV Upload & Parse", "✓", "✓", "✓"],
+                    ["ATS Score Check", "✓", "✓", "✓"],
+                    ["Job Targeting", "✓", "✓", "✓"],
+                    ["Cover Letter", "—", "✓", "✓"],
+                    ["Shareable Link", "—", "✓", "✓"],
                     ["Priority Support", "—", "—", "✓"],
-                  ].map(([feat, free, pro, prem]) => (
+                    ["Free LinkedIn Review", "—", "—", "✓"],
+                  ].map(([feat, s3, s6, s12]) => (
                     <tr key={feat} className="hover:bg-slate-50 transition-colors">
                       <td className="px-8 py-3.5 text-slate-700">{feat}</td>
-                      <td className="px-6 py-3.5 text-center text-slate-400">{free}</td>
-                      <td className="px-6 py-3.5 text-center text-slate-700 font-medium">{pro}</td>
-                      <td className="px-6 py-3.5 text-center text-slate-400">{prem}</td>
+                      <td className="px-6 py-3.5 text-center text-slate-400">{s3}</td>
+                      <td className="px-6 py-3.5 text-center text-slate-700 font-medium">{s6}</td>
+                      <td className="px-6 py-3.5 text-center text-slate-400">{s12}</td>
                     </tr>
                   ))}
                 </tbody>

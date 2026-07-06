@@ -29,6 +29,10 @@ export default function BuilderPage() {
   const [optimizing, setOptimizing] = useState(false);
   const [skillInput, setSkillInput] = useState("");
   const [languageInput, setLanguageInput] = useState("");
+  const [toolInput, setToolInput] = useState("");
+  const [certName, setCertName] = useState("");
+  const [certIssuer, setCertIssuer] = useState("");
+  const [certDate, setCertDate] = useState("");
 
   // Save states
   const [saving, setSaving] = useState(false);
@@ -251,7 +255,12 @@ export default function BuilderPage() {
       const res = await fetch("/api/optimize-resume", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeData }),
+        body: JSON.stringify({
+          resumeData,
+          jobRole: resumeData.jobRole,
+          industry: resumeData.industry,
+          additionalInstructions: resumeData.additionalInstructions,
+        }),
       });
       const json = await res.json();
       if (json.resumeData) {
@@ -497,14 +506,39 @@ export default function BuilderPage() {
                 </div>
               )}
 
-              <div className="mt-8 glass rounded-xl p-5 border border-slate-200">
+              <div className="mt-6 glass rounded-xl p-5 border border-slate-200 space-y-4">
+                <h3 className="font-semibold text-sm text-slate-700">🎯 Target Job (Optional — helps AI tailor output)</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input
+                    label="Target Job Role"
+                    value={resumeData.jobRole || ""}
+                    onChange={(e) => setResumeData(prev => ({ ...prev, jobRole: e.target.value }))}
+                    placeholder="e.g. Software Engineer, Accountant"
+                  />
+                  <Input
+                    label="Target Industry"
+                    value={resumeData.industry || ""}
+                    onChange={(e) => setResumeData(prev => ({ ...prev, industry: e.target.value }))}
+                    placeholder="e.g. Technology, Finance, Healthcare"
+                  />
+                </div>
+                <Textarea
+                  label="Additional Instructions for AI"
+                  rows={2}
+                  value={resumeData.additionalInstructions || ""}
+                  onChange={(e) => setResumeData(prev => ({ ...prev, additionalInstructions: e.target.value }))}
+                  placeholder="e.g. Emphasize leadership, focus on quantified achievements, transitioning from X to Y..."
+                />
+              </div>
+
+              <div className="mt-4 glass rounded-xl p-5 border border-slate-200">
                 <h3 className="font-semibold text-sm mb-3 text-slate-700">What happens when you upload?</h3>
                 <ul className="space-y-2 text-sm text-slate-600">
                   {[
                     "AI extracts your name, email, phone, and location",
                     "Work experience with company, role, dates, and bullet points",
                     "Education history with degrees and institutions",
-                    "Skills, certifications, and projects",
+                    "Skills, certifications, tools, and projects",
                     "All fields auto-fill in the Manual Form tab",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-2">
@@ -516,6 +550,7 @@ export default function BuilderPage() {
               </div>
             </div>
           )}
+
 
           {/* Manual Form Tab */}
           {activeTab === "manual" && (
@@ -727,6 +762,114 @@ export default function BuilderPage() {
                 )}
               </Section>
 
+              {/* Certifications */}
+              <Section title="Certifications" icon="🏅">
+                <div className="space-y-4">
+                  {(resumeData.certifications || []).map((cert) => (
+                    <div key={cert.id} className="glass rounded-xl p-4 space-y-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <Input label="Certification Name" value={cert.name} onChange={(e) => setResumeData(prev => ({ ...prev, certifications: (prev.certifications || []).map(c => c.id === cert.id ? { ...c, name: e.target.value } : c) }))} placeholder="AWS Certified Solutions Architect" />
+                        <Input label="Issuing Organization" value={cert.issuer} onChange={(e) => setResumeData(prev => ({ ...prev, certifications: (prev.certifications || []).map(c => c.id === cert.id ? { ...c, issuer: e.target.value } : c) }))} placeholder="Amazon Web Services" />
+                        <Input label="Date" value={cert.date} onChange={(e) => setResumeData(prev => ({ ...prev, certifications: (prev.certifications || []).map(c => c.id === cert.id ? { ...c, date: e.target.value } : c) }))} placeholder="2024-06" />
+                      </div>
+                      <button onClick={() => setResumeData(prev => ({ ...prev, certifications: (prev.certifications || []).filter(c => c.id !== cert.id) }))} className="text-xs text-red-500 hover:text-red-600 flex items-center gap-1">
+                        <Trash2 className="w-3 h-3" /> Remove
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => setResumeData(prev => ({ ...prev, certifications: [...(prev.certifications || []), { id: generateId(), name: "", issuer: "", date: "" }] }))}
+                    className="w-full py-3 rounded-xl border border-dashed border-slate-300 text-sm text-slate-500 hover:text-blue-600 hover:border-blue-400 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" /> Add Certification
+                  </button>
+                </div>
+              </Section>
+
+              {/* Tools */}
+              <Section title="Tools & Software" icon="🛠️">
+                <div className="flex gap-2 mb-4">
+                  <input
+                    value={toolInput}
+                    onChange={(e) => setToolInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const trimmed = toolInput.trim();
+                        if (trimmed && !(resumeData.tools || []).includes(trimmed)) {
+                          setResumeData(prev => ({ ...prev, tools: [...(prev.tools || []), trimmed] }));
+                          setToolInput("");
+                        }
+                      }
+                    }}
+                    placeholder="Type a tool (e.g. Figma, Docker) and press Enter..."
+                    className="input-field flex-1"
+                    aria-label="Add tool"
+                  />
+                  <Button variant="secondary" size="sm" onClick={() => {
+                    const trimmed = toolInput.trim();
+                    if (trimmed && !(resumeData.tools || []).includes(trimmed)) {
+                      setResumeData(prev => ({ ...prev, tools: [...(prev.tools || []), trimmed] }));
+                      setToolInput("");
+                    }
+                  }}>Add</Button>
+                </div>
+                {(resumeData.tools || []).length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {(resumeData.tools || []).map((tool) => (
+                      <span key={tool} className="badge-brand flex items-center gap-1.5 pr-1">
+                        {tool}
+                        <button onClick={() => setResumeData(prev => ({ ...prev, tools: (prev.tools || []).filter(t => t !== tool) }))} className="ml-1 text-blue-300 hover:text-blue-700" aria-label={`Remove ${tool}`}>×</button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {(resumeData.tools || []).length === 0 && (
+                  <p className="text-xs text-slate-400">Add tools like Figma, Docker, Jira, Postman, Tableau...</p>
+                )}
+              </Section>
+
+              {/* References */}
+              <Section title="References" icon="👥">
+                <Textarea
+                  label="References (Optional)"
+                  rows={4}
+                  value={resumeData.references || ""}
+                  onChange={(e) => setResumeData(prev => ({ ...prev, references: e.target.value }))}
+                  placeholder={"John Smith, Senior Manager at TechCorp — john@techcorp.com\nJane Doe, Director at StartupXYZ — jane@startup.com"}
+                  hint="List your references here or write 'Available upon request'"
+                />
+              </Section>
+
+              {/* Job Targeting */}
+              <Section title="Job Targeting" icon="🎯">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input
+                    label="Target Job Role"
+                    value={resumeData.jobRole || ""}
+                    onChange={(e) => setResumeData(prev => ({ ...prev, jobRole: e.target.value }))}
+                    placeholder="e.g. Software Engineer, Accountant, Marketing Manager"
+                    hint="Helps AI tailor your resume more precisely"
+                  />
+                  <Input
+                    label="Target Industry"
+                    value={resumeData.industry || ""}
+                    onChange={(e) => setResumeData(prev => ({ ...prev, industry: e.target.value }))}
+                    placeholder="e.g. Finance, Technology, Healthcare"
+                  />
+                </div>
+                <div className="mt-4">
+                  <Textarea
+                    label="Additional Instructions for AI"
+                    rows={3}
+                    value={resumeData.additionalInstructions || ""}
+                    onChange={(e) => setResumeData(prev => ({ ...prev, additionalInstructions: e.target.value }))}
+                    placeholder="e.g. Emphasize leadership skills. I'm transitioning from banking to fintech. Focus on quantified achievements..."
+                    hint="The AI will follow these instructions when optimizing your resume"
+                  />
+                </div>
+              </Section>
+
               {/* AI Optimize Button */}
               <div className="glass rounded-2xl p-6 flex flex-col sm:flex-row items-center gap-4 border border-slate-200">
                 <div className="flex-1">
@@ -736,6 +879,7 @@ export default function BuilderPage() {
                   </h3>
                   <p className="text-sm text-slate-500">
                     Let GPT-4o-mini rewrite your resume with ATS keywords, action verbs, and quantified achievements.
+                    {resumeData.jobRole && <span className="text-blue-600 font-medium"> Targeting: {resumeData.jobRole}{resumeData.industry ? ` (${resumeData.industry})` : ""}</span>}
                   </p>
                 </div>
                 <Button onClick={handleOptimize} loading={optimizing} size="md">
@@ -755,6 +899,7 @@ export default function BuilderPage() {
               </div>
             </div>
           )}
+
 
           {/* ATS Match Tab */}
           {activeTab === "ats-match" && (

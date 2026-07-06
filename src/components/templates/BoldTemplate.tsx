@@ -5,7 +5,7 @@ import { formatDate } from "@/lib/utils";
 interface TemplateProps { data: ResumeData; }
 
 export function BoldTemplate({ data }: TemplateProps) {
-  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [] } = data;
+  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [], certifications = [], tools = [], references } = data;
   return (
     <div className="bg-white text-gray-800 w-full min-h-[1056px] print-area" style={{ fontFamily: "'Arial', 'Helvetica', sans-serif", fontSize: "10.5pt" }}>
       {/* Dark Header */}
@@ -119,6 +119,44 @@ export function BoldTemplate({ data }: TemplateProps) {
           <div>
             <BoldSection title="Languages" />
             <p className="text-xs">{languages.join("  ·  ")}</p>
+          </div>
+        )}
+
+        {/* Certifications */}
+        {certifications.length > 0 && (
+          <div>
+            <BoldSection title="Certifications" />
+            <div className="space-y-1.5">
+              {certifications.map((cert) => (
+                <div key={cert.id} className="flex justify-between items-baseline">
+                  <div>
+                    <span className="text-xs font-bold">{cert.name}</span>
+                    {cert.issuer && <span className="text-xs text-gray-500 ml-2">· {cert.issuer}</span>}
+                  </div>
+                  {cert.date && <span className="text-xs text-gray-400">{cert.date}</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Tools */}
+        {tools.length > 0 && (
+          <div>
+            <BoldSection title="Tools & Software" />
+            <div className="flex flex-wrap gap-2">
+              {tools.map((t) => (
+                <span key={t} className="px-2.5 py-0.5 rounded text-xs font-medium" style={{ background: "#f0fdf4", color: "#16a34a" }}>{t}</span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* References */}
+        {references && references.trim() && (
+          <div>
+            <BoldSection title="References" />
+            <p className="text-xs whitespace-pre-line">{references}</p>
           </div>
         )}
       </div>

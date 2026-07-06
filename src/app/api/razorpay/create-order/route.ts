@@ -14,8 +14,9 @@ function getRazorpay() {
 }
 
 const PLAN_IDS: Record<string, string> = {
-  pro: "plan_pro_id_from_razorpay",
-  premium: "plan_premium_id_from_razorpay",
+  starter: "plan_starter_3mo",
+  popular: "plan_popular_6mo",
+  "best-value": "plan_bestvalue_12mo",
 };
 
 export async function POST(req: NextRequest) {
@@ -32,14 +33,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
     }
 
-    // For one-time payment (simpler than subscription for demo)
-    const amounts: Record<string, number> = { pro: 49900, premium: 99900 }; // in paise
+    // Amounts in paise (INR): Starter=₹999, Popular=₹1799, Best Value=₹2999
+    const amounts: Record<string, number> = {
+      starter: 99900,
+      popular: 179900,
+      "best-value": 299900,
+    };
     const order = await razorpay.orders.create({
       amount: amounts[planId],
       currency: "INR",
       receipt: `receipt_${Date.now()}`,
       notes: { planId },
     });
+
 
     return NextResponse.json({
       orderId: order.id,

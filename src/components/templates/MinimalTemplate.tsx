@@ -5,7 +5,7 @@ import { formatDate } from "@/lib/utils";
 interface TemplateProps { data: ResumeData; }
 
 export function MinimalTemplate({ data }: TemplateProps) {
-  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [] } = data;
+  const { personalInfo, summary, experience, education, skills, projects = [], achievements = [], languages = [], certifications = [], tools = [], references } = data;
   return (
     <div className="bg-white text-gray-800 w-full min-h-[1056px] p-14 print-area" style={{ fontFamily: "'Helvetica Neue', Arial, sans-serif", fontSize: "10pt", lineHeight: 1.6 }}>
       {/* Name */}
@@ -131,6 +131,43 @@ export function MinimalTemplate({ data }: TemplateProps) {
           <div className="h-px bg-gray-100 mb-4" />
           <h2 className="text-xs uppercase tracking-[0.2em] text-gray-400 mb-3">Languages</h2>
           <p className="text-xs text-gray-600">{languages.join("  ·  ")}</p>
+        </div>
+      )}
+
+      {/* Certifications */}
+      {certifications.length > 0 && (
+        <div className="mt-6">
+          <div className="h-px bg-gray-100 mb-4" />
+          <h2 className="text-xs uppercase tracking-[0.2em] text-gray-400 mb-3">Certifications</h2>
+          <div className="space-y-1">
+            {certifications.map((cert) => (
+              <div key={cert.id} className="flex justify-between items-baseline">
+                <div>
+                  <span className="text-xs font-medium text-gray-800">{cert.name}</span>
+                  {cert.issuer && <span className="text-xs text-gray-400 ml-2">· {cert.issuer}</span>}
+                </div>
+                {cert.date && <span className="text-xs text-gray-400">{cert.date}</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tools */}
+      {tools.length > 0 && (
+        <div className="mt-6">
+          <div className="h-px bg-gray-100 mb-4" />
+          <h2 className="text-xs uppercase tracking-[0.2em] text-gray-400 mb-3">Tools & Software</h2>
+          <p className="text-xs text-gray-600">{tools.join("  ·  ")}</p>
+        </div>
+      )}
+
+      {/* References */}
+      {references && references.trim() && (
+        <div className="mt-6">
+          <div className="h-px bg-gray-100 mb-4" />
+          <h2 className="text-xs uppercase tracking-[0.2em] text-gray-400 mb-3">References</h2>
+          <p className="text-xs text-gray-600 whitespace-pre-line">{references}</p>
         </div>
       )}
     </div>

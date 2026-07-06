@@ -91,21 +91,26 @@ Return a JSON object with this exact structure:
     }
   ],
   "achievements": [],
-  "languages": []
+  "languages": [],
+  "tools": [],
+  "references": ""
 }
 
 Rules:
 - dates must be in YYYY-MM format or empty string
-- skills must be an array of strings
+- skills must be an array of strings (technical and soft skills)
+- tools must be an array of strings (software tools, platforms, IDEs — e.g. Figma, Docker, Jira)
 - bullets must be an array of strings
 - achievements must be an array of strings
 - languages must be an array of strings
 - technologies must be an array of strings
+- references should be a plain string containing names and contacts, or "Available upon request" if found
 - generate unique IDs (exp1, exp2, edu1, proj1, etc.)
-- if a field is not found, use empty string
+- if a field is not found, use empty string or empty array
 - extract ALL work experience entries
 - extract ALL project entries
-- extract ALL achievements and languages if found`;
+- extract ALL achievements and languages if found
+- separate tools (software/platforms) from skills (abilities/competencies) when possible`;
 
     const response = await openai.chat.completions.create({
       model: aiModel,

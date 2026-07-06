@@ -8,6 +8,7 @@ ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
 CREATE TABLE IF NOT EXISTS public.users (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   email TEXT,
+  name TEXT,
   plan TEXT DEFAULT 'free' CHECK (plan IN ('free', 'pro', 'premium')),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -16,9 +17,15 @@ CREATE TABLE IF NOT EXISTS public.users (
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.users (id, email, plan)
-  VALUES (NEW.id, NEW.email, 'free')
-  ON CONFLICT (id) DO NOTHING;
+  INSERT INTO public.users (id, email, name, plan)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name', ''),
+    'free'
+  )
+  ON CONFLICT (id) DO UPDATE
+  SET email = EXCLUDED.email, name = COALESCE(EXCLUDED.name, public.users.name);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
