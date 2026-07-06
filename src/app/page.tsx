@@ -24,11 +24,8 @@ export default function LandingPage() {
             </h1>
             
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-12">
-              <Link href="/auth" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition-colors text-center shadow-lg shadow-blue-600/20">
+              <Link href="/auth" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition-all transition-colors text-center shadow-lg shadow-blue-600/20">
                 Get Started
-              </Link>
-              <Link href="/builder" className="w-full sm:w-auto px-8 py-4 bg-transparent border-2 border-slate-200 hover:border-slate-300 text-slate-700 rounded-full font-semibold transition-colors flex items-center justify-center gap-2">
-                Build Resume <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
             

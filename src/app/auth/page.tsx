@@ -78,7 +78,7 @@ function AuthForm() {
               </svg>
               Continue with Google
             </button>
-            
+
             <button
               onClick={handleGuestSignIn}
               className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-slate-50 border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-100 rounded-xl font-semibold text-slate-600 transition-colors shadow-sm"
