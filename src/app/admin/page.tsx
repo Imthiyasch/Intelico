@@ -58,49 +58,40 @@ export default function AdminPage() {
   };
 
   const fetchData = async () => {
-    // 1. Fetch resumes count
-    const { count: resCount } = await supabase.from("resumes").select("*", { count: "exact", head: true });
-    setResumesCount(resCount || 0);
+    try {
+      // 1. Fetch resumes count
+      const { count: resCount } = await supabase.from("resumes").select("*", { count: "exact", head: true });
+      setResumesCount(resCount || 0);
 
-    // 2. Fetch users and their resume counts
-    const { data: profiles } = await supabase.from("users").select("id, email, name, plan, created_at");
-    
-    if (profiles) {
-      setUsersCount(profiles.length);
+      // 2. Fetch secure auth users from the backend API
+      const res = await fetch("/api/admin/users");
+      const json = await res.json();
+      
+      if (json.users) {
+        const authList: AdminUser[] = json.users;
+        setUsers(authList);
+        setUsersCount(authList.length);
 
-      // Plan counts
-      const counts: Record<string, number> = { free: 0, starter: 0, popular: 0, "best-value": 0 };
-      profiles.forEach((p) => {
-        const planName = p.plan || "free";
-        counts[planName] = (counts[planName] || 0) + 1;
-      });
-      setPlanCounts(counts);
-      setActivePlanCount(profiles.filter(p => p.plan && p.plan !== "free").length);
+        // Plan counts aggregation from live user plans
+        const counts: Record<string, number> = { free: 0, starter: 0, popular: 0, "best-value": 0 };
+        authList.forEach((u: any) => {
+          const planName = u.plan || "free";
+          counts[planName] = (counts[planName] || 0) + 1;
+        });
+        setPlanCounts(counts);
+        setActivePlanCount(authList.filter((u: any) => u.plan && u.plan !== "free").length);
+      }
 
-      // Get resume count for each user
-      const { data: resumes } = await supabase.from("resumes").select("user_id");
-      const resumeMap: Record<string, number> = {};
-      (resumes || []).forEach(r => {
-        resumeMap[r.user_id] = (resumeMap[r.user_id] || 0) + 1;
-      });
-
-      const formatted: AdminUser[] = profiles.map(p => ({
-        id: p.id,
-        email: p.email || "No Email",
-        created_at: p.created_at,
-        resumeCount: resumeMap[p.id] || 0
-      })).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-      setUsers(formatted);
+      // 3. Fetch recent activities
+      const { data: activities } = await supabase
+        .from("activities")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(10);
+      setRecentActivities(activities || []);
+    } catch (err) {
+      console.error("Failed to load dashboard statistics", err);
     }
-
-    // 3. Fetch recent activities
-    const { data: activities } = await supabase
-      .from("activities")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(10);
-    setRecentActivities(activities || []);
   };
 
   useEffect(() => {

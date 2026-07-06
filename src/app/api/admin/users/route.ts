@@ -2,6 +2,45 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
 import { cookies } from "next/headers";
 
+export async function GET(req: NextRequest) {
+  try {
+    const supabase = createServerSupabase(); // Service role key client
+    
+    // Fetch users directly from Supabase Auth Management (secured bypass RLS)
+    const { data: { users }, error } = await supabase.auth.admin.listUsers();
+    if (error) throw error;
+
+    // Fetch resume count for each user
+    const { data: resumes } = await supabase.from("resumes").select("user_id");
+    const resumeMap: Record<string, number> = {};
+    (resumes || []).forEach((r) => {
+      resumeMap[r.user_id] = (resumeMap[r.user_id] || 0) + 1;
+    });
+
+    // Fetch plans from public.users profile mapping
+    const { data: profiles } = await supabase.from("users").select("id, plan");
+    const planMap: Record<string, string> = {};
+    (profiles || []).forEach((p) => {
+      planMap[p.id] = p.plan || "free";
+    });
+
+    const formattedUsers = (users || []).map((u) => ({
+      id: u.id,
+      email: u.email || "No Email",
+      created_at: u.created_at,
+      last_sign_in_at: u.last_sign_in_at || null,
+      banned_until: u.banned_until || null,
+      plan: planMap[u.id] || "free",
+      resumeCount: resumeMap[u.id] || 0
+    }));
+
+    return NextResponse.json({ users: formattedUsers });
+  } catch (err: any) {
+    console.error("API Get users error:", err);
+    return NextResponse.json({ error: err.message || "Failed to load users" }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const cookieStore = cookies();
