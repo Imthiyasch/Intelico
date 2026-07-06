@@ -28,7 +28,9 @@ Instructions:
 2. Refine existing work experience bullet points to emphasize achievements, technologies, and keywords that align with the job description. Start bullet points with strong active verbs. Keep the number of bullet points same.
 3. Optimize project descriptions to highlight skills and technologies relevant to the job.
 4. Do NOT invent new jobs, roles, companies, education degrees, or certifications. Keep names, contact info, dates, and institutions exactly the same.
-5. Return ONLY the valid tailored resume JSON matching the exact same schema. Do not add any conversational text.`;
+5. Keep work experience items strictly inside the "experience" section. Do NOT move them, company duties, or team roles into the "achievements" section.
+6. The "achievements" section must only contain certifications, awards, publications, honors, or standalone career milestones that do not belong to a specific company.
+7. Return ONLY the valid tailored resume JSON matching the exact same schema. Do not add any conversational text.`;
 
     const response = await openai.chat.completions.create({
       model: aiModel,

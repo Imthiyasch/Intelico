@@ -20,6 +20,8 @@ Analyze the following resume JSON and rewrite it to be:
 6. Project descriptions optimized to highlight tech stack and clear outcomes
 
 IMPORTANT: Return ONLY valid JSON matching the exact same structure as input. Do not add or remove fields.
+- Keep work experience items strictly inside the "experience" section. Do NOT move them, company duties, or team roles into the "achievements" section.
+- The "achievements" section must only contain certifications, awards, publications, honors, or standalone career milestones that do not belong to a specific company.
 
 Input Resume JSON:
 ${JSON.stringify(resumeData, null, 2)}

@@ -104,7 +104,7 @@ export default function PreviewPage() {
         backgroundColor: "#ffffff",
         logging: false,
       });
-      const imgData = canvas.toDataURL("image/png");
+      const imgData = canvas.toDataURL("image/jpeg", 0.8);
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
@@ -112,12 +112,12 @@ export default function PreviewPage() {
       const imgH = pageWidth * imgRatio;
       
       if (imgH <= pageHeight) {
-        pdf.addImage(imgData, "PNG", 0, 0, pageWidth, imgH);
+        pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, imgH);
       } else {
         let position = 0;
         let remainingHeight = imgH;
         while (remainingHeight > 0) {
-          pdf.addImage(imgData, "PNG", 0, position, pageWidth, imgH);
+          pdf.addImage(imgData, "JPEG", 0, position, pageWidth, imgH);
           remainingHeight -= pageHeight;
           position -= pageHeight;
           if (remainingHeight > 0) pdf.addPage();
