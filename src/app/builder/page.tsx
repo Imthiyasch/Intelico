@@ -395,10 +395,37 @@ export default function BuilderPage() {
     }
   };
 
-  // ── Preview ─────────────────────────────────────────────────────────────
-  const handlePreview = () => {
-    localStorage.setItem("intellico_resume", JSON.stringify(resumeData));
-    router.push("/builder/preview");
+  // ── Save & Preview ──────────────────────────────────────────────────────
+  const handleSaveAndPreview = async () => {
+    setSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const template = localStorage.getItem("intellico_template") || "modern";
+        const payload = {
+          user_id: user.id,
+          title: resumeTitle,
+          content_json: resumeData,
+          template_id: template,
+        };
+
+        if (resumeId) {
+          await supabase.from("resumes").update(payload).eq("id", resumeId);
+        } else {
+          const result = await supabase.from("resumes").insert(payload).select().single();
+          if (result.data) {
+            setResumeId(result.data.id);
+            localStorage.setItem("intellico_resume_id", result.data.id);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Save on preview error:", err);
+    } finally {
+      setSaving(false);
+      localStorage.setItem("intellico_resume", JSON.stringify(resumeData));
+      router.push("/builder/preview");
+    }
   };
 
   return (
@@ -420,12 +447,9 @@ export default function BuilderPage() {
               <p className="text-slate-500 text-sm mt-1">Fill in your details and let AI optimize it</p>
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">
-              <Button variant="secondary" onClick={handleSave} loading={saving} size="sm">
-                {saveSuccess ? "✓ Saved!" : <><Save className="w-4 h-4" /> Save</>}
-              </Button>
-              <Button variant="primary" onClick={handlePreview} size="sm">
-                <Eye className="w-4 h-4" />
-                Preview
+              <Button variant="primary" onClick={handleSaveAndPreview} loading={saving} size="sm">
+                <Eye className="w-4 h-4 mr-1.5" />
+                {saving ? "Saving..." : "Save & Preview"}
               </Button>
             </div>
           </div>
@@ -889,12 +913,9 @@ export default function BuilderPage() {
 
               {/* Action buttons */}
               <div className="flex justify-end gap-3 pt-4">
-                <Button variant="secondary" onClick={handleSave} loading={saving}>
-                  {saveSuccess ? "✓ Saved!" : <><Save className="w-4 h-4" /> Save Resume</>}
-                </Button>
-                <Button variant="primary" onClick={handlePreview}>
-                  <Eye className="w-4 h-4" />
-                  Preview & Download
+                <Button variant="primary" onClick={handleSaveAndPreview} loading={saving}>
+                  <Eye className="w-4 h-4 mr-2" />
+                  {saving ? "Saving..." : "Save & Preview"}
                 </Button>
               </div>
             </div>

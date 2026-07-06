@@ -473,13 +473,13 @@ export default function PreviewPage() {
             </div>
 
             {/* Resume Preview */}
-            <div className="flex-1 flex justify-center">
-              <div className="w-full max-w-[794px]">
+            <div className="flex-1 w-full overflow-x-auto py-4 flex justify-start md:justify-center">
+              <div className="w-[794px] flex-shrink-0 mx-auto">
                 <div className="text-xs text-slate-500 text-center mb-4">A4 Preview — changes reflect instantly</div>
                 <div
                   ref={previewRef}
                   className="bg-white shadow-2xl rounded-sm overflow-hidden"
-                  style={{ minHeight: "1056px" }}
+                  style={{ minHeight: "1056px", width: "794px" }}
                 >
                   <TemplateComponent data={filteredData} />
                 </div>
