@@ -62,7 +62,7 @@ function AuthForm() {
             Welcome
           </h1>
           <p className="text-slate-500 text-base mb-10 leading-relaxed">
-            Sign in or create an account to start building your ATS-optimized resume.
+            Sign in to start building your ATS-optimized resume.
           </p>
 
           <div className="flex flex-col gap-3">
