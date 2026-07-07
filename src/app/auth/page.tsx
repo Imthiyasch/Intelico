@@ -39,36 +39,36 @@ function AuthForm() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 font-sans text-slate-900">
+    <div className="min-h-[100dvh] bg-slate-50 flex flex-col items-center justify-center px-4 py-12 font-sans text-slate-900">
       <div className="relative w-full max-w-md animate-fade-in">
         {/* Back button */}
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-8 transition-colors font-medium">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6 transition-colors font-medium">
           <ArrowLeft className="w-4 h-4" />
           Back to Home
         </Link>
 
-        <div className="bg-white rounded-3xl p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 text-center">
+        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 text-center">
           {/* Logo */}
           <div className="flex items-center justify-center mb-8">
             <div className="flex items-center justify-center bg-[#000080] px-4 py-2 rounded-xl shadow-md shadow-[#000080]/20">
-              <span className="font-display font-bold text-3xl tracking-tight">
+              <span className="font-display font-bold text-2xl sm:text-3xl tracking-tight">
                 <span className="text-white">Intelli</span>
                 <span className="text-[#FF9900]">co</span>
               </span>
             </div>
           </div>
 
-          <h1 className="text-3xl font-extrabold mb-3 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold mb-3 tracking-tight">
             Welcome
           </h1>
-          <p className="text-slate-500 text-base mb-10 leading-relaxed">
+          <p className="text-slate-500 text-sm sm:text-base mb-8 sm:mb-10 leading-relaxed">
             Sign in to start building your ATS-optimized resume.
           </p>
 
           <div className="flex flex-col gap-3">
             <button
               onClick={handleGoogleSignIn}
-              className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl font-semibold text-slate-700 transition-colors shadow-sm"
+              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 sm:py-4 bg-white border-2 border-slate-200 hover:border-slate-300 rounded-xl font-semibold text-slate-700 transition-colors shadow-sm text-sm sm:text-base"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -81,7 +81,7 @@ function AuthForm() {
 
             <button
               onClick={handleGuestSignIn}
-              className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-slate-50 border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-100 rounded-xl font-semibold text-slate-600 transition-colors shadow-sm"
+              className="w-full flex items-center justify-center gap-3 px-6 py-3.5 sm:py-4 bg-slate-50 border-2 border-slate-100 hover:border-slate-200 hover:bg-slate-100 rounded-xl font-semibold text-slate-600 transition-colors shadow-sm text-sm sm:text-base"
             >
               Continue as Guest
             </button>

@@ -24,7 +24,7 @@ export default function LandingPage() {
             </h1>
             
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-12">
-              <Link href="/auth" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition-all transition-colors text-center shadow-lg shadow-blue-600/20">
+              <Link href="/dashboard" className="w-full sm:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-semibold transition-all transition-colors text-center shadow-lg shadow-blue-600/20">
                 Get Started
               </Link>
             </div>
@@ -189,9 +189,6 @@ export default function LandingPage() {
               Choose from our professionally engineered designs built to pass automatic parsers and land interviews.
             </p>
           </div>
-          <Link href="/builder/preview" className="px-6 py-3 bg-white border-2 border-slate-200 text-slate-700 font-semibold hover:border-slate-300 rounded-full transition-colors flex items-center gap-2 text-sm shadow-sm">
-            Explore All 5 Templates <ArrowRight className="w-4 h-4 text-blue-600" />
-          </Link>
         </div>
         
         {/* Real-looking Template Previews */}
