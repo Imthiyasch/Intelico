@@ -1,18 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
-import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest) {
   try {
-    const cookieStore = cookies();
     const supabase = createServerSupabase();
 
-    // Find the access token from cookies (try both common formats)
-    const allCookies = cookieStore.getAll();
-    const tokenCookie = allCookies.find(
-      (c) => c.name.includes("access_token") || c.name === "sb-access-token"
-    );
-    const token = tokenCookie?.value;
+    // Get the bearer token from Authorization header
+    const authHeader = req.headers.get("Authorization");
+    const token = authHeader?.replace("Bearer ", "").trim();
 
     if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

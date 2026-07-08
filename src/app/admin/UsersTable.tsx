@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export type AdminUser = {
   id: string;
@@ -46,7 +47,13 @@ function ResumeDataModal({
   useState(() => {
     (async () => {
       try {
-        const res = await fetch(`/api/admin/resumes?userId=${user.id}`);
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token;
+        if (!token) throw new Error("Not authenticated");
+
+        const res = await fetch(`/api/admin/resumes?userId=${user.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || "Failed to load");
         setResumes(data.resumes);
