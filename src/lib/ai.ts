@@ -3,7 +3,7 @@ import OpenAI from "openai";
 const useGemini = !!process.env.GEMINI_API_KEY;
 
 export const openai = new OpenAI({
-  apiKey: process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY || "",
+  apiKey: process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY || "dummy-key-for-build",
   baseURL: useGemini ? "https://generativelanguage.googleapis.com/v1beta/openai/" : undefined,
 });
 
