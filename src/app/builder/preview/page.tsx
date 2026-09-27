@@ -10,6 +10,8 @@ import { ModernTemplate } from "@/components/templates/ModernTemplate";
 import { MinimalTemplate } from "@/components/templates/MinimalTemplate";
 import { BoldTemplate } from "@/components/templates/BoldTemplate";
 import { ExecutiveTemplate } from "@/components/templates/ExecutiveTemplate";
+import { SapphireTemplate } from "@/components/templates/SapphireTemplate";
+import { ElegantTemplate } from "@/components/templates/ElegantTemplate";
 import { ResumeData, TemplateId, TEMPLATES, EMPTY_RESUME } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/Button";
@@ -236,7 +238,9 @@ export default function PreviewPage() {
     minimal: MinimalTemplate,
     bold: BoldTemplate,
     executive: ExecutiveTemplate,
-  }[selectedTemplate];
+    sapphire: SapphireTemplate,
+    elegant: ElegantTemplate,
+  }[selectedTemplate] || ModernTemplate;
 
   // Filtering out hidden sections
   const filteredData: ResumeData = {
@@ -327,7 +331,7 @@ export default function PreviewPage() {
                 {activeSidebarTab === "templates" && (
                   <div className="space-y-3">
                     <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Select Layout</h2>
-                    <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
+                    <div className="space-y-2 max-h-[360px] overflow-y-auto pr-1">
                       {TEMPLATES.map((tmpl) => (
                         <button
                           key={tmpl.id}
@@ -338,15 +342,21 @@ export default function PreviewPage() {
                               : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-transparent"
                           }`}
                         >
-                          <div className="w-10 h-12 rounded bg-white/90 flex-shrink-0 overflow-hidden shadow-sm">
-                            <div className="w-full h-full scale-75 origin-top-left" style={{ transform: "scale(0.3)", transformOrigin: "top left", width: "333%", height: "333%" }}>
-                              <div className="bg-white h-full">
-                                {tmpl.id === "bold" && <div className="h-5 bg-gray-900" />}
-                                {tmpl.id === "modern" && <div className="h-3 bg-blue-600" />}
-                                <div className="p-1 space-y-0.5">
-                                  <div className="h-2 bg-gray-300 rounded w-2/3" />
-                                  <div className="h-1 bg-gray-200 rounded w-full" />
+                          <div className="w-10 h-12 rounded bg-white/90 flex-shrink-0 overflow-hidden shadow-sm border border-slate-200">
+                            <div className="w-full h-full" style={{ transform: "scale(0.3)", transformOrigin: "top left", width: "333%", height: "333%" }}>
+                              <div className="bg-white h-full p-1.5 space-y-1">
+                                {tmpl.id === "bold" && <div className="h-5 bg-gray-900 -mx-1.5 -mt-1.5 mb-1" />}
+                                {tmpl.id === "modern" && <div className="h-3 bg-blue-600 -mx-1.5 -mt-1.5 mb-1" />}
+                                {tmpl.id === "sapphire" && <div className="h-3 bg-[#002D62] -mx-1.5 -mt-1.5 mb-1" />}
+                                {tmpl.id === "elegant" && <div className="h-2 bg-gray-900 -mx-1.5 -mt-1.5 mb-1" />}
+                                <div className="flex items-center gap-1">
+                                  <div className="h-2 bg-gray-400 rounded w-1/2" />
+                                  {(tmpl.id === "sapphire" || tmpl.id === "elegant") && (
+                                    <div className="w-2.5 h-2.5 rounded-full bg-blue-300 ml-auto" />
+                                  )}
                                 </div>
+                                <div className="h-1 bg-gray-200 rounded w-full" />
+                                <div className="h-1 bg-gray-200 rounded w-4/5" />
                               </div>
                             </div>
                           </div>
@@ -402,6 +412,39 @@ export default function PreviewPage() {
                       </div>
 
                       <div>
+                        <label className="text-xs font-semibold text-slate-600 block mb-1">Job Role / Title</label>
+                        <input
+                          type="text"
+                          value={resumeData.jobRole || ""}
+                          onChange={(e) => setResumeData((p) => ({ ...p, jobRole: e.target.value }))}
+                          className="w-full p-2 text-xs border rounded-lg focus:outline-none focus:border-blue-500"
+                          placeholder="e.g. Teacher, Medical Coder"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-semibold text-slate-600 block mb-1">Optional Photo (Image URL or upload)</label>
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            value={resumeData.personalInfo.photo || ""}
+                            onChange={(e) => handleFieldChange("personalInfo", "photo", e.target.value)}
+                            placeholder="https://... or upload in edit"
+                            className="flex-1 p-2 text-xs border rounded-lg focus:outline-none focus:border-blue-500"
+                          />
+                          {resumeData.personalInfo.photo && (
+                            <button
+                              type="button"
+                              onClick={() => handleFieldChange("personalInfo", "photo", "")}
+                              className="text-xs text-red-500 hover:text-red-600 px-1"
+                            >
+                              Clear
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <div>
                         <label className="text-xs font-semibold text-slate-600 block mb-1">Email</label>
                         <input
                           type="email"
@@ -427,6 +470,39 @@ export default function PreviewPage() {
                           type="text"
                           value={resumeData.personalInfo.location}
                           onChange={(e) => handleFieldChange("personalInfo", "location", e.target.value)}
+                          className="w-full p-2 text-xs border rounded-lg focus:outline-none focus:border-blue-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-semibold text-slate-600 block mb-1">Nationality</label>
+                        <input
+                          type="text"
+                          value={resumeData.personalInfo.nationality || ""}
+                          onChange={(e) => handleFieldChange("personalInfo", "nationality", e.target.value)}
+                          placeholder="e.g. Indian"
+                          className="w-full p-2 text-xs border rounded-lg focus:outline-none focus:border-blue-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-semibold text-slate-600 block mb-1">Date of Birth</label>
+                        <input
+                          type="text"
+                          value={resumeData.personalInfo.dateOfBirth || ""}
+                          onChange={(e) => handleFieldChange("personalInfo", "dateOfBirth", e.target.value)}
+                          placeholder="e.g. 24 Dec 1991"
+                          className="w-full p-2 text-xs border rounded-lg focus:outline-none focus:border-blue-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-semibold text-slate-600 block mb-1">Visa Status</label>
+                        <input
+                          type="text"
+                          value={resumeData.personalInfo.visaStatus || ""}
+                          onChange={(e) => handleFieldChange("personalInfo", "visaStatus", e.target.value)}
+                          placeholder="e.g. Own Visa / Citizen"
                           className="w-full p-2 text-xs border rounded-lg focus:outline-none focus:border-blue-500"
                         />
                       </div>

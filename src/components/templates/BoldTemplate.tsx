@@ -9,15 +9,24 @@ export function BoldTemplate({ data }: TemplateProps) {
   return (
     <div className="bg-white text-gray-800 w-full min-h-[1056px] print-area" style={{ fontFamily: "'Arial', 'Helvetica', sans-serif", fontSize: "10.5pt" }}>
       {/* Dark Header */}
-      <div className="px-10 py-8" style={{ background: "#111827" }}>
-        <h1 className="text-3xl font-black text-white tracking-tight mb-2">{personalInfo.name || "Your Name"}</h1>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: "#9ca3af" }}>
-          {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.phone && <span>{personalInfo.phone}</span>}
-          {personalInfo.location && <span>{personalInfo.location}</span>}
-          {personalInfo.linkedin && <span>{personalInfo.linkedin}</span>}
-          {personalInfo.portfolio && <span>{personalInfo.portfolio}</span>}
+      <div className="px-10 py-8 flex items-center justify-between gap-6" style={{ background: "#111827" }}>
+        <div className="flex-1">
+          <h1 className="text-3xl font-black text-white tracking-tight mb-2">{personalInfo.name || "Your Name"}</h1>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: "#9ca3af" }}>
+            {personalInfo.email && <span>{personalInfo.email}</span>}
+            {personalInfo.phone && <span>{personalInfo.phone}</span>}
+            {personalInfo.location && <span>{personalInfo.location}</span>}
+            {personalInfo.linkedin && <span>{personalInfo.linkedin}</span>}
+            {personalInfo.portfolio && <span>{personalInfo.portfolio}</span>}
+          </div>
         </div>
+        {personalInfo.photo && (
+          <img
+            src={personalInfo.photo}
+            alt={personalInfo.name || "Profile"}
+            className="w-20 h-20 rounded-full object-cover border-2 border-gray-600 shadow-md flex-shrink-0"
+          />
+        )}
       </div>
 
       {/* Skills strip */}

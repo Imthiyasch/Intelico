@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, FileText, Plus, Trash2, Sparkles, Loader2, ChevronDown, ChevronUp, Save, Eye } from "lucide-react";
+import { Upload, FileText, Plus, Trash2, Sparkles, Loader2, ChevronDown, ChevronUp, Save, Eye, Camera, X } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
@@ -76,6 +76,20 @@ export default function BuilderPage() {
       ...prev,
       personalInfo: { ...prev.personalInfo, [field]: value },
     }));
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      alert("Image size should be under 3MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      updatePersonal("photo", reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
   // ── Experience ─────────────────────────────────────────────────────────
@@ -582,11 +596,72 @@ export default function BuilderPage() {
 
               {/* Personal Info */}
               <Section title="Personal Information" icon="👤">
+                <div className="mb-5 flex flex-col sm:flex-row items-center gap-5 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="relative group">
+                    {resumeData.personalInfo.photo ? (
+                      <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-blue-500 shadow-sm">
+                        <img
+                          src={resumeData.personalInfo.photo}
+                          alt="Profile preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => updatePersonal("photo", "")}
+                          className="absolute inset-0 bg-black/60 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-[10px]"
+                          title="Remove Photo"
+                        >
+                          <X className="w-4 h-4 mb-0.5" />
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-slate-200 border-2 border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-500">
+                        <Camera className="w-6 h-6 mb-1 text-slate-400" />
+                        <span className="text-[10px] font-medium">No Photo</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-1.5 text-center sm:text-left">
+                    <h4 className="text-sm font-semibold text-slate-800">
+                      Profile Picture <span className="text-xs font-normal text-slate-500">(Optional)</span>
+                    </h4>
+                    <p className="text-xs text-slate-500">
+                      Upload a headshot for templates supporting photos (e.g. Sapphire Diamond &amp; Elegant Serif). Max 3MB.
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      <label className="btn-secondary !py-1.5 !px-3 text-xs cursor-pointer inline-flex items-center gap-1.5">
+                        <Upload className="w-3.5 h-3.5" />
+                        Upload Image
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handlePhotoUpload}
+                        />
+                      </label>
+                      {resumeData.personalInfo.photo && (
+                        <button
+                          type="button"
+                          onClick={() => updatePersonal("photo", "")}
+                          className="text-xs text-red-500 hover:text-red-700 px-2 py-1"
+                        >
+                          Remove Photo
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input label="Full Name" value={resumeData.personalInfo.name} onChange={(e) => updatePersonal("name", e.target.value)} placeholder="Rahul Kumar" />
+                  <Input label="Job Title / Professional Role" value={resumeData.jobRole || ""} onChange={(e) => setResumeData(prev => ({ ...prev, jobRole: e.target.value }))} placeholder="Teacher / Software Engineer / Medical Coder" />
                   <Input label="Email" type="email" value={resumeData.personalInfo.email} onChange={(e) => updatePersonal("email", e.target.value)} placeholder="rahul@example.com" />
                   <Input label="Phone" value={resumeData.personalInfo.phone} onChange={(e) => updatePersonal("phone", e.target.value)} placeholder="+91 98765 43210" />
-                  <Input label="Location" value={resumeData.personalInfo.location} onChange={(e) => updatePersonal("location", e.target.value)} placeholder="Bengaluru, Karnataka" />
+                  <Input label="Location" value={resumeData.personalInfo.location} onChange={(e) => updatePersonal("location", e.target.value)} placeholder="Bengaluru, Karnataka / Dubai, UAE" />
+                  <Input label="Nationality (Optional)" value={resumeData.personalInfo.nationality || ""} onChange={(e) => updatePersonal("nationality", e.target.value)} placeholder="Indian / American / etc." />
+                  <Input label="Date of Birth (Optional)" value={resumeData.personalInfo.dateOfBirth || ""} onChange={(e) => updatePersonal("dateOfBirth", e.target.value)} placeholder="24 Dec 1991 / 01-19-2002" />
+                  <Input label="Visa Status (Optional)" value={resumeData.personalInfo.visaStatus || ""} onChange={(e) => updatePersonal("visaStatus", e.target.value)} placeholder="Own Visa / Citizen / Work Permit" />
                   <Input label="LinkedIn URL" value={resumeData.personalInfo.linkedin || ""} onChange={(e) => updatePersonal("linkedin", e.target.value)} placeholder="linkedin.com/in/rahulkumar" />
                   <Input label="Portfolio / Website" value={resumeData.personalInfo.portfolio || ""} onChange={(e) => updatePersonal("portfolio", e.target.value)} placeholder="rahulkumar.dev" />
                 </div>

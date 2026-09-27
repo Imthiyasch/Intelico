@@ -20,6 +20,8 @@ import { ClassicTemplate } from "@/components/templates/ClassicTemplate";
 import { MinimalTemplate } from "@/components/templates/MinimalTemplate";
 import { BoldTemplate } from "@/components/templates/BoldTemplate";
 import { ExecutiveTemplate } from "@/components/templates/ExecutiveTemplate";
+import { SapphireTemplate } from "@/components/templates/SapphireTemplate";
+import { ElegantTemplate } from "@/components/templates/ElegantTemplate";
 
 export type AdminUser = {
   id: string;
@@ -45,6 +47,8 @@ const TEMPLATE_MAP: Record<string, React.ComponentType<{ data: ResumeData }>> = 
   minimal: MinimalTemplate,
   bold: BoldTemplate,
   executive: ExecutiveTemplate,
+  sapphire: SapphireTemplate,
+  elegant: ElegantTemplate,
 };
 
 const TEMPLATE_BADGE: Record<string, string> = {
@@ -53,6 +57,8 @@ const TEMPLATE_BADGE: Record<string, string> = {
   minimal: "bg-slate-100 text-slate-700",
   bold: "bg-purple-100 text-purple-700",
   executive: "bg-emerald-100 text-emerald-700",
+  sapphire: "bg-sky-100 text-sky-800",
+  elegant: "bg-indigo-100 text-indigo-800",
 };
 
 // ---------- Structured data table view ----------

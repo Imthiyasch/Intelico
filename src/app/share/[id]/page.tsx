@@ -9,6 +9,8 @@ import { ModernTemplate } from "@/components/templates/ModernTemplate";
 import { MinimalTemplate } from "@/components/templates/MinimalTemplate";
 import { BoldTemplate } from "@/components/templates/BoldTemplate";
 import { ExecutiveTemplate } from "@/components/templates/ExecutiveTemplate";
+import { SapphireTemplate } from "@/components/templates/SapphireTemplate";
+import { ElegantTemplate } from "@/components/templates/ElegantTemplate";
 
 export default function SharePage() {
   const { id } = useParams();
@@ -66,6 +68,8 @@ export default function SharePage() {
     minimal: MinimalTemplate,
     bold: BoldTemplate,
     executive: ExecutiveTemplate,
+    sapphire: SapphireTemplate,
+    elegant: ElegantTemplate,
   }[templateId] || ModernTemplate;
 
   return (

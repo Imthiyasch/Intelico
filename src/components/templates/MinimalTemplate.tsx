@@ -9,14 +9,23 @@ export function MinimalTemplate({ data }: TemplateProps) {
   return (
     <div className="bg-white text-gray-800 w-full min-h-[1056px] p-14 print-area" style={{ fontFamily: "'Helvetica Neue', Arial, sans-serif", fontSize: "10pt", lineHeight: 1.6 }}>
       {/* Name */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-light tracking-tight text-gray-900 mb-2">{personalInfo.name || "Your Name"}</h1>
-        <div className="text-xs text-gray-400 flex flex-wrap gap-x-5 gap-y-1">
-          {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.phone && <span>{personalInfo.phone}</span>}
-          {personalInfo.location && <span>{personalInfo.location}</span>}
-          {personalInfo.linkedin && <span>{personalInfo.linkedin}</span>}
+      <div className="mb-8 flex items-start justify-between gap-6">
+        <div className="flex-1">
+          <h1 className="text-4xl font-light tracking-tight text-gray-900 mb-2">{personalInfo.name || "Your Name"}</h1>
+          <div className="text-xs text-gray-400 flex flex-wrap gap-x-5 gap-y-1">
+            {personalInfo.email && <span>{personalInfo.email}</span>}
+            {personalInfo.phone && <span>{personalInfo.phone}</span>}
+            {personalInfo.location && <span>{personalInfo.location}</span>}
+            {personalInfo.linkedin && <span>{personalInfo.linkedin}</span>}
+          </div>
         </div>
+        {personalInfo.photo && (
+          <img
+            src={personalInfo.photo}
+            alt={personalInfo.name || "Profile"}
+            className="w-20 h-20 rounded-full object-cover border border-gray-200 shadow-sm flex-shrink-0"
+          />
+        )}
       </div>
 
       {summary && (

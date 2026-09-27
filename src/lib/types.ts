@@ -6,6 +6,10 @@ export interface ResumeData {
     location: string;
     linkedin?: string;
     portfolio?: string;
+    photo?: string;
+    nationality?: string;
+    dateOfBirth?: string;
+    visaStatus?: string;
   };
   summary: string;
   experience: ExperienceItem[];
@@ -57,7 +61,14 @@ export interface ProjectItem {
   link?: string;
 }
 
-export type TemplateId = "classic" | "modern" | "minimal" | "bold" | "executive";
+export type TemplateId =
+  | "classic"
+  | "modern"
+  | "minimal"
+  | "bold"
+  | "executive"
+  | "sapphire"
+  | "elegant";
 
 export interface Resume {
   id?: string;
@@ -86,7 +97,7 @@ export const PRICING_PLANS: PricingPlan[] = [
     period: "3 months",
     features: [
       "Unlimited Resumes",
-      "All 5 ATS Templates",
+      "All 7 ATS Templates",
       "PDF Download",
       "Basic AI optimization",
       "Basic Email Support",
@@ -124,8 +135,10 @@ export const PRICING_PLANS: PricingPlan[] = [
 ];
 
 export const TEMPLATES = [
-  { id: "classic" as TemplateId, name: "Classic", description: "Timeless black & white" },
   { id: "modern" as TemplateId, name: "Modern", description: "Blue accents, clean" },
+  { id: "classic" as TemplateId, name: "Classic", description: "Timeless black & white" },
+  { id: "sapphire" as TemplateId, name: "Sapphire Diamond", description: "Navy accents, diamond dividers, optional photo" },
+  { id: "elegant" as TemplateId, name: "Elegant Serif", description: "Editorial serif style, clean horizontal rules, optional photo" },
   { id: "minimal" as TemplateId, name: "Minimal", description: "Whitespace-focused" },
   { id: "bold" as TemplateId, name: "Bold", description: "Strong dark header" },
   { id: "executive" as TemplateId, name: "Executive", description: "Conservative, professional" },
@@ -139,6 +152,10 @@ export const EMPTY_RESUME: ResumeData = {
     location: "",
     linkedin: "",
     portfolio: "",
+    photo: "",
+    nationality: "",
+    dateOfBirth: "",
+    visaStatus: "",
   },
   summary: "",
   experience: [],

@@ -11,14 +11,23 @@ export function ClassicTemplate({ data }: TemplateProps) {
   return (
     <div className="font-serif bg-white text-gray-900 w-full min-h-[1056px] p-12 print-area" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "11pt", lineHeight: 1.5 }}>
       {/* Header */}
-      <div className="text-center border-b-2 border-gray-900 pb-4 mb-5">
-        <h1 className="text-3xl font-bold tracking-wide uppercase mb-1">{personalInfo.name || "Your Name"}</h1>
-        <div className="text-sm flex flex-wrap justify-center gap-x-3 gap-y-1 text-gray-600">
-          {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.phone && <><span>·</span><span>{personalInfo.phone}</span></>}
-          {personalInfo.location && <><span>·</span><span>{personalInfo.location}</span></>}
-          {personalInfo.linkedin && <><span>·</span><span>{personalInfo.linkedin}</span></>}
+      <div className="border-b-2 border-gray-900 pb-4 mb-5 flex items-center justify-between gap-6">
+        <div className={`flex-1 ${!personalInfo.photo ? "text-center" : ""}`}>
+          <h1 className="text-3xl font-bold tracking-wide uppercase mb-1">{personalInfo.name || "Your Name"}</h1>
+          <div className={`text-sm flex flex-wrap gap-x-3 gap-y-1 text-gray-600 ${!personalInfo.photo ? "justify-center" : ""}`}>
+            {personalInfo.email && <span>{personalInfo.email}</span>}
+            {personalInfo.phone && <><span>·</span><span>{personalInfo.phone}</span></>}
+            {personalInfo.location && <><span>·</span><span>{personalInfo.location}</span></>}
+            {personalInfo.linkedin && <><span>·</span><span>{personalInfo.linkedin}</span></>}
+          </div>
         </div>
+        {personalInfo.photo && (
+          <img
+            src={personalInfo.photo}
+            alt={personalInfo.name || "Profile"}
+            className="w-20 h-20 rounded-full object-cover border border-gray-800 shadow-sm flex-shrink-0"
+          />
+        )}
       </div>
 
       {/* Summary */}

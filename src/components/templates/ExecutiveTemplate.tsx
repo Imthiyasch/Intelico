@@ -9,9 +9,18 @@ export function ExecutiveTemplate({ data }: TemplateProps) {
   return (
     <div className="bg-white text-gray-800 w-full min-h-[1056px] p-12 print-area" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontSize: "10.5pt", lineHeight: 1.55 }}>
       {/* Two-column header */}
-      <div className="flex justify-between items-start border-b-2 pb-4 mb-6" style={{ borderColor: "#1e3a5f" }}>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight" style={{ color: "#1e3a5f" }}>{personalInfo.name || "Your Name"}</h1>
+      <div className="flex justify-between items-start border-b-2 pb-4 mb-6 gap-4" style={{ borderColor: "#1e3a5f" }}>
+        <div className="flex items-center gap-4">
+          {personalInfo.photo && (
+            <img
+              src={personalInfo.photo}
+              alt={personalInfo.name || "Profile"}
+              className="w-16 h-16 rounded-full object-cover border-2 border-slate-400 shadow-sm flex-shrink-0"
+            />
+          )}
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight" style={{ color: "#1e3a5f" }}>{personalInfo.name || "Your Name"}</h1>
+          </div>
         </div>
         <div className="text-right text-xs" style={{ color: "#4b5563" }}>
           {personalInfo.email && <div>{personalInfo.email}</div>}

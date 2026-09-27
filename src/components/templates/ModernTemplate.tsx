@@ -10,15 +10,24 @@ export function ModernTemplate({ data }: TemplateProps) {
   return (
     <div className="bg-white text-gray-800 w-full min-h-[1056px] print-area" style={{ fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif", fontSize: "10.5pt" }}>
       {/* Header bar */}
-      <div className="px-10 py-8" style={{ borderBottom: `3px solid ${ACCENT}` }}>
-        <h1 className="text-3xl font-bold mb-1 tracking-tight" style={{ color: "#0f172a" }}>{personalInfo.name || "Your Name"}</h1>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: "#64748b" }}>
-          {personalInfo.email && <span>✉ {personalInfo.email}</span>}
-          {personalInfo.phone && <span>📞 {personalInfo.phone}</span>}
-          {personalInfo.location && <span>📍 {personalInfo.location}</span>}
-          {personalInfo.linkedin && <span>🔗 {personalInfo.linkedin}</span>}
-          {personalInfo.portfolio && <span>🌐 {personalInfo.portfolio}</span>}
+      <div className="px-10 py-8 flex items-start justify-between gap-6" style={{ borderBottom: `3px solid ${ACCENT}` }}>
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold mb-1 tracking-tight" style={{ color: "#0f172a" }}>{personalInfo.name || "Your Name"}</h1>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs" style={{ color: "#64748b" }}>
+            {personalInfo.email && <span>✉ {personalInfo.email}</span>}
+            {personalInfo.phone && <span>📞 {personalInfo.phone}</span>}
+            {personalInfo.location && <span>📍 {personalInfo.location}</span>}
+            {personalInfo.linkedin && <span>🔗 {personalInfo.linkedin}</span>}
+            {personalInfo.portfolio && <span>🌐 {personalInfo.portfolio}</span>}
+          </div>
         </div>
+        {personalInfo.photo && (
+          <img
+            src={personalInfo.photo}
+            alt={personalInfo.name || "Profile"}
+            className="w-20 h-20 rounded-full object-cover border-2 border-blue-200 shadow-sm flex-shrink-0"
+          />
+        )}
       </div>
 
       <div className="px-10 py-6 space-y-5">
