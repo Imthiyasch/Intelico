@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, aiModel } from "@/lib/ai";
 
+export const maxDuration = 30;
+
 export async function POST(req: NextRequest) {
   try {
     if (!process.env.OPENAI_API_KEY && !process.env.GEMINI_API_KEY) {

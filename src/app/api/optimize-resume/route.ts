@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { openai, aiModel } from "@/lib/ai";
 
+export const maxDuration = 30;
+
 export async function POST(req: NextRequest) {
   try {
     const { resumeData } = await req.json();
