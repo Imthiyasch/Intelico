@@ -9,12 +9,19 @@ export async function GET(req: NextRequest) {
   try {
     const supabase = createServerSupabase(); // Service role key client
     
-    // Fetch users directly from Supabase Auth Management (secured bypass RLS)
-    const { data: { users }, error } = await supabase.auth.admin.listUsers();
+    // Fetch users directly from Supabase Auth Management (secured bypass RLS).
+    // Default page size is 50 — use perPage:1000 to avoid silently missing users.
+    const { data: { users }, error } = await supabase.auth.admin.listUsers({ perPage: 1000 });
     if (error) throw error;
 
-    // Fetch resume count for each user
-    const { data: resumes } = await supabase.from("resumes").select("user_id");
+    // Fetch resume count for each user.
+    // Supabase default limit is 1000 rows — set a high explicit limit so
+    // newly created resumes beyond 1000 are never silently dropped.
+    const { data: resumes, error: resumesError } = await supabase
+      .from("resumes")
+      .select("user_id")
+      .limit(10000);
+    if (resumesError) console.error("Failed to fetch resumes:", resumesError);
     const resumeMap: Record<string, number> = {};
     (resumes || []).forEach((r) => {
       resumeMap[r.user_id] = (resumeMap[r.user_id] || 0) + 1;
