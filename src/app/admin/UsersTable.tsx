@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   MoreVertical, ShieldBan, ShieldCheck, Trash2,
@@ -271,7 +271,7 @@ function ResumeDataModal({ user, onClose }: { user: AdminUser; onClose: () => vo
   const { toast } = useToast();
 
   // Fetch on mount
-  useState(() => {
+  useEffect(() => {
     (async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -292,7 +292,7 @@ function ResumeDataModal({ user, onClose }: { user: AdminUser; onClose: () => vo
         setLoading(false);
       }
     })();
-  });
+  }, [user.id]);
 
   const selected = resumes?.find((r) => r.id === selectedId) ?? null;
   const TemplateComponent = selected ? (TEMPLATE_MAP[selected.template_id] ?? ModernTemplate) : null;
@@ -410,10 +410,11 @@ function ResumeDataModal({ user, onClose }: { user: AdminUser; onClose: () => vo
 }
 
 // ---------- Main Table ----------
-export default function UsersTable({ users }: { users: AdminUser[] }) {
+export default function UsersTable({ users, onRefresh }: { users: AdminUser[]; onRefresh?: () => void }) {
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
   const [viewingResumesUser, setViewingResumesUser] = useState<AdminUser | null>(null);
   const { toast } = useToast();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
 
   const handleAction = async (action: "ban" | "unban" | "delete", userId: string) => {
@@ -429,7 +430,10 @@ export default function UsersTable({ users }: { users: AdminUser[] }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Action failed");
       toast({ title: "Success", description: data.message });
-      router.refresh();
+      // Re-fetch live data from the server instead of relying on router.refresh()
+      // which does not re-trigger client-side data fetches.
+      if (onRefresh) onRefresh();
+      else router.refresh();
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } finally {

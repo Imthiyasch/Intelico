@@ -217,7 +217,7 @@ export default function AdminPage() {
               />
             </div>
           </div>
-          <UsersTable users={filteredUsers} />
+          <UsersTable users={filteredUsers} onRefresh={fetchData} />
         </div>
 
         {/* Activity Logs */}
