@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Users, FileText, Activity, ShieldAlert, CreditCard, TrendingUp, Search, RefreshCw } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
@@ -12,8 +12,10 @@ export default function AdminPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [authorized, setAuthorized] = useState(false);
   const [adminEmail, setAdminEmail] = useState("");
+  const autoRefreshRef = useRef<NodeJS.Timeout | null>(null);
   
   // Dashboard metrics
   const [usersCount, setUsersCount] = useState(0);
@@ -92,6 +94,7 @@ export default function AdminPage() {
         .order("created_at", { ascending: false })
         .limit(10);
       setRecentActivities(activities || []);
+      setLastUpdated(new Date());
     } catch (err) {
       console.error("Failed to load dashboard statistics", err);
     } finally {
@@ -102,6 +105,17 @@ export default function AdminPage() {
   useEffect(() => {
     checkAdminAccess();
   }, []);
+
+  // Auto-refresh every 30 seconds so new resumes/logins show without manual refresh
+  useEffect(() => {
+    if (!authorized) return;
+    autoRefreshRef.current = setInterval(() => {
+      fetchData(false);
+    }, 30000);
+    return () => {
+      if (autoRefreshRef.current) clearInterval(autoRefreshRef.current);
+    };
+  }, [authorized]);
 
   const filteredUsers = users.filter(u => 
     u.email.toLowerCase().includes(searchQuery.toLowerCase())
@@ -143,16 +157,23 @@ export default function AdminPage() {
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <p className="text-slate-500 text-sm">Logged in as {adminEmail}</p>
           </div>
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => fetchData(true)}
-            disabled={refreshing}
-            className="flex items-center gap-1.5"
-          >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
-            {refreshing ? "Refreshing..." : "Refresh Data"}
-          </Button>
+          <div className="flex flex-col items-end gap-1">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => fetchData(true)}
+              disabled={refreshing}
+              className="flex items-center gap-1.5"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+              {refreshing ? "Refreshing..." : "Refresh Data"}
+            </Button>
+            {lastUpdated && (
+              <p className="text-xs text-slate-400">
+                Updated {lastUpdated.toLocaleTimeString()} · auto-refreshes every 30s
+              </p>
+            )}
+          </div>
         </div>
 
         {/* Overview Cards */}
