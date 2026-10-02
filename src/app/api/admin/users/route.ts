@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerSupabase } from "@/lib/supabase";
 import { cookies } from "next/headers";
 
+// Disable Next.js caching so every request fetches fresh data from Supabase
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const supabase = createServerSupabase(); // Service role key client

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/Button";
 export default function AdminPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [adminEmail, setAdminEmail] = useState("");
   
@@ -45,7 +46,7 @@ export default function AdminPage() {
       if (allowedAdmins.includes(userEmail)) {
         setAuthorized(true);
         setAdminEmail(userEmail);
-        await fetchData();
+        await fetchData(false);
       } else {
         setAuthorized(false);
       }
@@ -57,20 +58,22 @@ export default function AdminPage() {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = async (isManualRefresh = false) => {
+    if (isManualRefresh) setRefreshing(true);
     try {
-      // 1. Fetch resumes count
-      const { count: resCount } = await supabase.from("resumes").select("*", { count: "exact", head: true });
-      setResumesCount(resCount || 0);
-
-      // 2. Fetch secure auth users from the backend API
-      const res = await fetch("/api/admin/users");
+      // Fetch all users + resume counts from the API in one call.
+      // cache: "no-store" ensures Next.js never serves a cached response.
+      const res = await fetch("/api/admin/users", { cache: "no-store" });
       const json = await res.json();
-      
+
       if (json.users) {
         const authList: AdminUser[] = json.users;
         setUsers(authList);
         setUsersCount(authList.length);
+
+        // Derive total resume count directly from the API data (always in sync)
+        const totalResumes = authList.reduce((sum: number, u: any) => sum + (u.resumeCount || 0), 0);
+        setResumesCount(totalResumes);
 
         // Plan counts aggregation from live user plans
         const counts: Record<string, number> = { free: 0, starter: 0, popular: 0, "best-value": 0 };
@@ -82,7 +85,7 @@ export default function AdminPage() {
         setActivePlanCount(authList.filter((u: any) => u.plan && u.plan !== "free").length);
       }
 
-      // 3. Fetch recent activities
+      // Fetch recent activities (force fresh from Supabase)
       const { data: activities } = await supabase
         .from("activities")
         .select("*")
@@ -91,6 +94,8 @@ export default function AdminPage() {
       setRecentActivities(activities || []);
     } catch (err) {
       console.error("Failed to load dashboard statistics", err);
+    } finally {
+      if (isManualRefresh) setRefreshing(false);
     }
   };
 
@@ -138,8 +143,15 @@ export default function AdminPage() {
             <h1 className="text-3xl font-bold">Admin Dashboard</h1>
             <p className="text-slate-500 text-sm">Logged in as {adminEmail}</p>
           </div>
-          <Button variant="secondary" size="sm" onClick={fetchData} className="flex items-center gap-1.5">
-            <RefreshCw className="w-4 h-4" /> Refresh Data
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => fetchData(true)}
+            disabled={refreshing}
+            className="flex items-center gap-1.5"
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
+            {refreshing ? "Refreshing..." : "Refresh Data"}
           </Button>
         </div>
 
@@ -217,7 +229,7 @@ export default function AdminPage() {
               />
             </div>
           </div>
-          <UsersTable users={filteredUsers} onRefresh={fetchData} />
+          <UsersTable users={filteredUsers} onRefresh={() => fetchData(true)} />
         </div>
 
         {/* Activity Logs */}
