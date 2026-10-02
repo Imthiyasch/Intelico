@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Upload, FileText, Plus, Trash2, Sparkles, Loader2, ChevronDown, ChevronUp, Save, Eye, Camera, X } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
@@ -12,7 +12,8 @@ import { generateId } from "@/lib/utils";
 
 type Tab = "upload" | "manual" | "ats-match";
 
-export default function BuilderPage() {
+// Inner component — useSearchParams() requires a Suspense boundary in Next.js
+function BuilderPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<Tab>("manual");
@@ -1270,5 +1271,14 @@ function ExperienceCard({
         </div>
       )}
     </div>
+  );
+}
+
+// Suspense wrapper required because BuilderPageInner uses useSearchParams()
+export default function BuilderPage() {
+  return (
+    <Suspense fallback={null}>
+      <BuilderPageInner />
+    </Suspense>
   );
 }
