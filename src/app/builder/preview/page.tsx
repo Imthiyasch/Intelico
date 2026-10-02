@@ -106,23 +106,24 @@ export default function PreviewPage() {
         backgroundColor: "#ffffff",
         logging: false,
       });
-      const imgData = canvas.toDataURL("image/jpeg", 0.8);
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
       const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+      const pageWidth = pdf.internal.pageSize.getWidth(); // 210mm
+      const pageHeight = pdf.internal.pageSize.getHeight(); // 297mm
       const imgRatio = canvas.height / canvas.width;
       const imgH = pageWidth * imgRatio;
       
-      if (imgH <= pageHeight) {
-        pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, imgH);
+      // If content fits within 1 page (allow 6mm margin of error for borders/shadows/rounding), keep on 1 page
+      if (imgH <= pageHeight + 6) {
+        pdf.addImage(imgData, "JPEG", 0, 0, pageWidth, Math.min(imgH, pageHeight));
       } else {
         let position = 0;
         let remainingHeight = imgH;
-        while (remainingHeight > 0) {
+        while (remainingHeight > 6) {
           pdf.addImage(imgData, "JPEG", 0, position, pageWidth, imgH);
           remainingHeight -= pageHeight;
           position -= pageHeight;
-          if (remainingHeight > 0) pdf.addPage();
+          if (remainingHeight > 6) pdf.addPage();
         }
       }
       pdf.save(`${resumeTitle.replace(/\s+/g, "_")}.pdf`);
@@ -555,7 +556,7 @@ export default function PreviewPage() {
                 <div
                   ref={previewRef}
                   className="bg-white shadow-2xl rounded-sm overflow-hidden"
-                  style={{ minHeight: "1056px", width: "794px" }}
+                  style={{ minHeight: "1123px", width: "794px" }}
                 >
                   <TemplateComponent data={filteredData} />
                 </div>
