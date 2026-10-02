@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Upload, FileText, Plus, Trash2, Sparkles, Loader2, ChevronDown, ChevronUp, Save, Eye, Camera, X } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import { Input, Textarea } from "@/components/ui/Input";
@@ -14,6 +14,7 @@ type Tab = "upload" | "manual" | "ats-match";
 
 export default function BuilderPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<Tab>("manual");
   const [resumeData, setResumeData] = useState<ResumeData>(EMPTY_RESUME);
   const [resumeTitle, setResumeTitle] = useState("My Resume");
@@ -54,6 +55,16 @@ export default function BuilderPage() {
   const [expandedExp, setExpandedExp] = useState<string[]>([]);
 
   useEffect(() => {
+    // If ?new=true param is present, always start fresh (clear any cached resume)
+    if (searchParams.get("new") === "true") {
+      localStorage.removeItem("intellico_resume");
+      localStorage.removeItem("intellico_template");
+      localStorage.removeItem("intellico_resume_id");
+      localStorage.removeItem("intellico_resume_title");
+      // Remove the param from URL without a full reload
+      router.replace("/builder");
+      return;
+    }
     // Load from localStorage if editing existing resume
     const stored = localStorage.getItem("intellico_resume");
     const storedId = localStorage.getItem("intellico_resume_id");
@@ -63,7 +74,7 @@ export default function BuilderPage() {
     }
     if (storedId) setResumeId(storedId);
     if (storedTitle) setResumeTitle(storedTitle);
-  }, []);
+  }, [searchParams]);
 
   // Update localStorage on every change
   useEffect(() => {
