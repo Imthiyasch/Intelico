@@ -41,7 +41,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-3 mt-6">
               <a
-                href="https://wa.me/919999999999?text=Hi%2C%20I%20need%20help%20with%20Intellico"
+                href="https://wa.me/919747509289?text=Hi%2C%20I%20need%20help%20with%20Intellico"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-green-400 border border-green-500/20 bg-green-500/5 hover:bg-green-500/10 transition-all"

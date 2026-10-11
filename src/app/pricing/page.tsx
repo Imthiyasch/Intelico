@@ -172,7 +172,7 @@ export default function PricingPage() {
           <div className="text-center">
             <p className="text-slate-500 text-sm mb-4">Need help choosing a plan?</p>
             <a
-              href="https://wa.me/919999999999?text=Hi%2C+I+need+help+choosing+an+Intellico+plan"
+              href="https://wa.me/919747509289?text=Hi%2C+I+need+help+choosing+an+Intellico+plan"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-medium text-green-700 border border-green-200 bg-green-50 hover:bg-green-100 transition-all"
